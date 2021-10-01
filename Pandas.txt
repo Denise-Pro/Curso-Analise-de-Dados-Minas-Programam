@@ -1,0 +1,659 @@
+Pandas
+
+Pandas Manipula dois tipos de estruturas de Dados:
+
+a estrutura unidimensional que so admite uma coluna e n linhas a qual chamamos de Series. Uma lista se assemelha a essa estrutura;
+
+a estrutura Bidimensional (mais utilizada) que admite n numero de linhas e n numero de colunas a qual chamamos de DatraFrames. planilhas de excel ou tabelas SQl são estruturas semelhantes.
+
+Em um Dataframe as colunas podem assumir vários formatos de dados diferentes e entre si inclusive.
+
+A criação de um Dataframe pode ser realizada a partir de vários tipos de outras estruturas de dados como json, dicionário, planilha excel, arquivo csv, txt etc.
+
+Um DataFrame é um conjunto de Series.
+
+Métodos de criação de Dataframe:
+
+data = [1, 2, 3, 4, 5]
+s = pd.Series(data)
+
+Dataframe com index e cabeçalho:
+
+df1 = pd.Dataframe(data = dados, index = indice, columns = colunas) -> a fonte dos dados poder ser uma lista ou um dicionário
+indice e coluna são variáveis/objetos que guardam números ou nomes q servem como identificadores de linha e coluna
+índex é sempre linhas e columns colunas
+
+Ler arquivo e salvar num Dataframe
+
+import pandas as pd
+
+ler fontes de dados diferentes:
+Uma base CSV (pd.read_csv(...))
+Uma base JSON (pd.read_json(...))
+Uma base TXT (pd.read_table(...))
+Um arquivo EXCEL (pd.read_excel(...))
+Uma página HTML (pd.read_html(...)) 
+
+df = pd.read_csv('dados.csv', sep = ';') #le o que está no arquivo e carrega em um DF a cada ';' forma-se uma coluna nova
+
+CRAIANDO UM DF A PARTIR DE UM DICIONÁRIO:
+import pandas as pd
+alunos = pd.DataFrame({'Nome': ['Ary', 'Cátia', 'Denis', 'Beto', 'Bruna', 'Dara', 'Carlos', 'Alice'], 
+                        'Sexo': ['M', 'F', 'M', 'M', 'F', 'F', 'M', 'F'], 
+                        'Idade': [15, 27, 56, 32, 42, 21, 19, 35], 
+                        'Notas': [7.5, 2.5, 5.0, 10, 8.2, 7, 6, 5.6]}, 
+                        columns = ['Nome', 'Idade', 'Sexo', 'Notas'])
+alunos
+saída:
+Nome	Idade	Sexo	Notas
+0	Ary	15	M	7.5
+1	Cátia	27	F	2.5
+2	Denis	56	M	5.0
+3	Beto	32	M	10.0
+4	Bruna	42	F	8.2
+5	Dara	21	F	7.0
+6	Carlos	19	M	6.0
+7	Alice	35	F	5.6
+
+
+Tamanho de um Dataframe:
+
+nomeDoDF.shape -> retorna uma tupla com 2 números: o primeiro é o número de linhas e o segundo é o número de colunas/variáveis
+nomeDoDF.shape[0] -> qtd linhas
+nomeDoDF.shape[1] -> qtd colunas
+
+ex: print('o df contém {} linhas e {} colunas'.format(nomeDoDF.shape[0],nomeDoDF.shape[1]))
+
+len(nomeDoDF) -> retorna o numero de linhas
+
+Informações de um Dataframe:
+
+nomeDoDF.info() -> mostra as Informações
+
+nomeDoDF.dtypes -> mostra os tipos das variáveis
+"object" é string em pandas
+
+tipos_de_dados = pd.Dataframe(nomeDoDF.dtypes, columns = ['tipos_de_dados']) -> o objeto tipos_de_dados recebe um Dataframe so com as colunas
+do DF e seus tipos. a colna q tem os tipos_de_dados vai receber esse nome.
+
+tipos_de_dados.columns.name = 'variáveis' a coluna com o nome das variáveis vai receber esse nome
+
+Mostrando as primeiras 5 posições: 
+
+nomeDoDF.head()
+
+Mostrando as primeiras 10 posições: 
+
+nomeDoDF.head(10)
+
+Colunas de um Dataframe:
+
+para pegar só uma coluna: nomeDoDF['coluna']
+ex: dados['tipo'] -> mostra so o q tem nessa coluna tipo
+ex: dados.tipo também funciona
+
+Deduplicação:
+
+nomeDoDF.drop_duplicates() -> so vai mostrar o DF sem duplicidade. Pra aplicar a mudança vc pode atribuir a um objeto ou
+
+nomeDoDF.drop_duplicates(inplace = True) -> desse jeito a mudança é aplicada ao df sem necessidade de atribuir a outro objeto.
+seja:
+s = pd.Series(list('asdadeadesdasesda'))
+
+s.unique() -> retorna: ['a', 's', 'd', 'e']
+
+s.value_counts() -> retorna quantas vezes um objeto se repete
+saída: a 5 s 5 d 4 e 3
+
+value_counts() é uma funcionalidade aplicável somente a Series e, por isso, precisamos executar o código para cada coluna do DataFrame, individualmente.
+
+ex: vendo se a moeda é viciada - contando qtd cara e qtd coroa de cada moeda
+
+eventos = {'m1': list(m1), 
+            'm2': list(m2), 
+            'm3': list(m3), 
+            'm4': list(m4), 
+            'm5': list(m5)}
+moedas = pd.DataFrame(eventos)
+df = pd.DataFrame(data = ['Cara', 'Coroa'], 
+                    index = ['c', 'C'], 
+                    columns = ['Faces'])
+for item in moedas:
+    df = pd.concat([df, moedas[item].value_counts()], axis = 1)
+
+
+index de um DataFrame:
+
+df.index = range(df.shape[0])
+df.index = range(len(df))
+
+Concatenação de Dataframes:
+
+ex1: df1 [df1 > 0] = 'A' -> as linhas q tiverem dados maior que zero receberão 'A'
+df1 [df2 > 0] = 'B'
+
+df = pd.concat([df1, df2]) -> desse jeito um df será concatenado embaixo do outro
+
+df = pd.concat([df1, df2], axis = 1) -> desse jeito um df será concatenado do lado do outro
+
+EXEMPLOS
+
+dados = {'A': {'X': 1, 'Y': 3}, 'B': {'X': 2, 'Y': 4}}
+df = pd.DataFrame(dados) -> estamos criando um Dataframe a partir de um dicionário de dicionários
+df 
+
+a saída:
+
+	A	B
+X	1	2
+Y	3	4
+
+dados = [[1, 2, 3], [4, 5, 6]]
+index = 'X,Y'.split(',')
+columns = list('CBA')[::-1]
+df = pd.DataFrame(dados, index, columns)
+df
+
+a saída:
+
+A	B	C
+X	1	2	3
+Y	4	5	6
+
+CRIANDO UMA LISTA A PARTIR DE UMA COLUNA DE UM DF:
+ residencial = list(dados['Tipo'].drop_duplicates()) -> essa lista conterá o nome das variáveis dessa coluna sem repetição
+dados é um df ; Tipo é uma das colunas desse df;
+
+residencial = ['Quitinete', 
+'Casa',
+'Apartamento',
+'Casa de Condomínio',
+'Casa de Vila']
+
+O método isin() retorna uma série booleana a partir de um DataFrame
+selecao=dados['Tipo'].isin(residencial) -> esse método verifica se os elementos da lista residencial existem em dados e rotorna True ou False
+
+dados_residencial = dados[selecao] -> dados_residencial será um novo Dataframe q conterá só os dados residenciais 
+
+dados_residencial.index = range(dados_residencial.shape[0]) -> aqui estamos atribuindo índices ao df a partir do intervalo de que tem o tamanho desse df
+
+CRIANDO UM Dataframe COM LETRAS E NÚMEROS:
+
+numeros = [i for i in range(11)] -> i vai de 0 a 10
+letras = [chr(i + 65) for i in range(11)] -> não entendi bem essa parte, mas as letras vão de A a K
+nome_coluna = ['N'] 
+df = pd.DataFrame(data = numeros, index = letras, columns = nome_coluna) -> data recebe qual a coluna referente aos dados 
+df
+saída:
+	N
+A	0
+B	1
+C	2
+D	3
+E	4
+
+criando uma selecao:
+
+
+selecao = df['N'].isin([i for i in range(11) if i % 2 == 0]) -> pegando só os pares desse intervalo
+df = df[selecao]
+df
+
+saída:
+N
+A	0
+C	2
+E	4
+G	6
+I	8
+K	10
+
+para EXPORTAÇÃO de dados utilizaremos to_csv():
+
+dados_residencial.to_csv('dados/aluguel_residencial.csv', sep=';', index = False) -> export sem índice pq quando reimpotar vai ficar com duas colunas de indice 
+
+ORGANIZANDO / ORDENANDO Dataframes:
+
+ex1: data = [[1, 2, 3], [4, 5, 6], [7, 8, 9]]
+
+list('321') -> criando uma lista
+df = pd.DataFrame(data, list('321'), list('ZYX'))
+
+saída:
+
+	Z	Y	X
+3	1	2	3
+2	4	5	6
+1	7	8	9
+
+o método sort_index()  organiza o DataFrame pelo índice das linhas:
+
+df.sort_index(inplace = True) -> inplace equivale às linhas, ou seja, ordena aos índices
+
+Como resultado:
+
+Z	Y	X
+1	7	8	9
+2	4	5	6
+3	1	2	3
+
+df.sort_index(inplace = True, axis = 1) -> ordena os índices e o cabeçalho
+
+saída:
+
+X	Y	Z
+1	9	8	7
+2	6	5	4
+3	3	2	1
+
+df.sort_values(by = 'X', inplace = True) -> ordena a coluna x e reordena os índices
+df
+
+Z	Y	X
+3	3	2	1
+2	6	5	4
+1	9	8	7
+
+Passemos, agora, as variáveis X e Y:
+
+df.sort_values(by = ['X','Y'], inplace = True) -> ordena as colunas x e y e reordena os índices
+df
+O resultado será:
+
+Z	Y	X
+3	1	2	3
+2	4	5	6
+1	7	8	9
+
+df.sort_values(by = '3', axis = 1, inplace = True) -> 
+df
+O DataFrame apresentará a seguinte configuração:
+
+Z	Y	X
+3	1	2	3
+2	4	5	6
+1	7	8	9
+
+Considere o seguinte DataFrame nomeado como df:
+
+C	B	A
+Z	9	6	3
+Y	8	5	2
+X	7	4	1
+
+df.sort_index()
+df.sort_index(axis = 1)
+df
+
+saída:
+
+C	B	A
+Z	9	6	3
+Y	8	5	2
+X	7	4	1
+
+NÃO ACONTECE NADAA pq
+Para que o método sort_index() modifique o DataFrame, o argumento inplace deve ser modificado para True.
+
+SELEÇÕES E FREQUÊNCIAS:
+
+Importaremos o Pandas e o novo conjunto de dados aluguel_residencial.csv. Precisamos inserir o separador ;, como de costume.
+
+dados = pd.read_csv('dados/aluguel_residencial.csv', sep = ';')
+
+#Selecione somente os imóveis classificados com tipo 'Apartamento'.
+selecao = dados ['Tipo'] == 'Apartamento'
+selecao
+Teremos como resultado marcações False ou True nos dados analisados.
+
+#Selecione somente os imóveis classificados com tipo 'Apartamento'.
+selecao = dados['Tipo'] == 'Apartamento'
+n1 = dados[selecao].shape[0]
+n1
+
+Teremos como saída a quantidade de registros de apartamentos no banco de dados:
+
+19532
+
+#Selecione os imóveis classificados com tipos 'Casa', 'Casa de Condomínio' e 'Casa de Vila'. O '|' faz papel de 'ou' 
+selecao = (dados['Tipo'] == 'Casa') | (dados['Tipo'] == 'Casa de Condomínio') | (dados['Tipo'] == 'Casa de Vila')
+n2 = dados[selecao].shape[0] -> retorna a quantidade de casa, casa de Condomínio etc... 
+n2 
+
+#Selecione os imóveis com área entre 60 e 100 metros quadrados, incluindo os limites.
+#60 <= Area <=100
+selecao = (dados['Area'] >= 60) & (dados['Area'] <= 100)
+n3 = dados[selecao].shape[0]
+n3
+Como resultado, coletamos 8719 que se encontram nas especificações de área.
+
+#Selecione os imóveis que tenham pelo menos 4 quartos e aluguel menor que R$ 2.000,00.
+selecao = (dados['Quartos'] >= 4) & (dados['Valor'] < 2000)
+n4 = dados[selecao].shape[0]
+n4
+Termos apenas 41 resultados que atendam este critério.
+
+Imprimindo o resultado final:
+
+print("Nº de imóveis classificados com tipo 'Apartamento' -> {}".format(n1))
+print("Nº de imóveis classificados com tipos 'Casa', 'Casa de Condomínio' e 'Casa de Vila'-> {}".format(n2))
+print("Nº de imóveis com área entre 60 e 100 metros quadrados, incluindo os limites -> {}".format(n3))
+print("Nº de imóveis que tenham pelo menos 4 quartos e aluguel menor que R$ 2.000,00 -> {}".format(n4))
+
+CRIAR SERIES A PARTIR DE UMA COLUNA:
+
+seja o df:
+
+data = [(1, 2, 3, 4),
+        (5, 6, 7, 8),
+        (8, 10, 11, 12),
+        (13, 14, 15, 16)]
+df = pd.DataFrame(data, 'l1 l2 l3 l4'.split(), 'c1 c2 c3 c4'.split())
+
+'l1 l2 l3 l4'.split() -> retorna essa lista: ['l1', 'l2', 'l3', 'l4'] -> equivale aos índices das linhas
+
+'c1 c2 c3 c4'.split() -> mesma coisa so q para as colunas
+
+df['c1'] -> retorna uma series com a coluna 'c1' 
+
+df[['c3','c1']] ->  lembrando que um df é um conjunto de series
+
+Teremos o DataFrame com as respectivas colunas:
+
+c3	c1
+l1	3	1
+L2	7	5
+L3	11	8
+L4	15	13
+
+SERIES/ DF POR LINHAS:
+
+df[:] -> vai trazer um df/series com todas as linhas
+
+Ao escreveremos df[1:3] teremos como resultado:
+
+c1	c2	c3	c4
+l2	5	6	7	8
+l3	8	10	11	12
+
+A linha l3 corresponde ao número 2 no índice numérico, contudo, devemos passar o índice final 3 para que 2 seja exibido.
+
+dicionário de dicionários: assessando as posições
+
+d = {'a':1, 'b':2, 'c': {'d':3, 'e':4}}
+d['c']['d']
+saída: 3
+
+d = {'c': {'d':3, 'e':4}, 'a': 1, 'b': 5}
+d['c']['e']
+saída: 4
+
+df.loc[] -> serve para criar uma series/df a partir de rótulos de linhas e coluna - adimite numericos e não numericos.
+
+loc com 2 condições :
+
+df_areaDesmatada.loc[((df_areaDesmatada['Anos'] >= 2009) & (df_areaDesmatada['Anos'] <= 2012))]
+
+Crie um DataFrame somente com os alunos reprovados e mantenha neste DataFrame apenas as colunas Nome, Sexo e Idade, nesta ordem.
+
+Alternativa incorreta
+selecao = alunos['Aprovado'] == False
+reprovados = alunos.loc[selecao, ['Nome', 'Sexo', 'Idade']]
+reprovados
+
+df.loc[['l3', 'l1'], ['c4','c1']]
+Teremos um pequeno DataFrame:
+
+c4	c1
+l3	12	8
+l1	4	1
+
+Crie uma visualização com os três alunos mais novos.
+
+
+Alternativa correta
+alunos.sort_values(by = ['Idade'], inplace = True)
+alunos.iloc[:3]
+
+TRATANDO DADOS FALTANTES:
+
+isnull() é um método que irá gerar um DataFrame booleano, em que a observação marcada como True caracteriza um dado nulo, isto é, um missing. Para utilizá-lo, escreveremos:
+
+nomeDoDF.isnull()
+
+nomeDoDF.info(): mostra os datatypes, e a qtd de dados no df
+
+
+nomeDoDF.notnull() -> retorna false quando tem nulo
+
+selecao fornece exatamente as assinaturas que deverão ser removidas do banco de dados iremos adicionar ~ em selecao, que
+
+dados = dados[~selecao] -> pega o contrário de seleção
+
+ Agora precisamos filtrar os dados de acordo do tipo Apartamento com Condomino nulo.
+
+selecao = (dados['Tipo'] == 'Apartamento') & (dados['Condominio'].isnull())
+
+dados.fillna(0, inplace = True) -> mantém esses dados, mas atribui o valor 0 a eles
+
+Substitui os valores faltantes que restam nas variáveis Condominio e IPTU por zero:
+
+imoveis = imoveis.fillna({'Condominio': 0, 'IPTU': 0})
+imoveis
+Tipo	Valor	Condominio	IPTU
+1	Apartamento	2000.0	878.0	112.0
+2	Casa	5000.0	0.0	500.0
+4	Apartamento	1500.0	850.0	0.0
+
+
+Reconstrói o índice do DataFrame resultante:
+
+imoveis.index = range(imoveis.shape[0])
+imoveis
+saída:
+
+Tipo	Valor	Condominio	IPTU
+0	Apartamento	2000.0	878.0	112.0
+1	Casa	5000.0	0.0	500.0
+2	Apartamento	1500.0	850.0	0.0
+
+Elimina os registros que não apresentam a variável Valor:
+
+imoveis.dropna(subset = ['Valor'], inplace = True)
+imoveis
+saída:
+
+Tipo	Valor	Condominio	IPTU
+1	Apartamento	2000.0	878.0	112.0
+2	Casa	5000.0	NaN	500.0
+4	Apartamento	1500.0	850.0	NaN
+
+Dados faltantes : INTERPOLAÇÃO
+
+seja :
+data = [0.5, None, None, 0.52, 0.54, None, None, 0.59, 0.6, None, 0.7]
+s = pd.Series(data)
+
+s.fillna(0)
+
+O resultado, será:
+0 0.50 
+1 0.00 
+2 0.00 
+
+ffill() -> Esse método, analisa a Series do primeiro elemento ao último, a cada valor nulo ele completa com o último valor não nulo
+
+s.fillna(method = 'ffill')
+
+saída:
+0 0.50
+1 0.50
+2 0.50 
+3 0.52 
+4 0.54 
+5 0.54
+
+bfill() -> faz o mesmo mas de baixo para cima
+
+s.fillna(s.mean()) -> completa os valores nulos pela média dos valores desse df
+
+atletas.fillna(atletas.mean(), inplace = True) ->a média dos valores não-faltantes será atribuída aos registros com missing values.
+
+s.fillna(method = 'ffill', limit = 1) -> o valor 0 e 1 se nulos serão preenchidos, de 1 pra frente não
+
+CRIANDO VARIÁVEIS / COLUNAS 
+
+Criaremos uma nova variável chamada Valor Bruto, que consistirá na união dos valores das variáveis Valor, Condominio e IPTU.
+
+dados['Valor Bruto'] = dados['Valor'] + dados['Condominio'] + dados['IPTU']
+
+valor por metro quadrado: 
+
+dados['Valor m2'] = dados['Valor']/dados['Area']
+
+dados['Valor m2'] = dados['Valor m2'].round(2) -> retorna valores arrendondados para 2 casas decimais
+
+apply() -> Esse método pertmite que apliquemos uma função à cada registro do DataFrame
+
+ex:
+
+casa = ['Casa', 'Casa de Condomínio', 'Casa de Vila']
+
+Para tanto, criaremos uma função lambda : 
+lambda x: 'Casa' if x in casa else 'Apartamento'
+
+dados['Tipo Agregado'] = dados['Tipo'].apply(lambda x: 'Casa' if x in casa else 'Apartamento') 
+#se x for algum elemento da lista casa será atribuído o valor casa, senão apartamento, e depois esses valores serão armazenados na coluna 'tipo agragado' 
+
+PEGANDO A MÉDIA DE UMA COLUNA/VARIÁVEL:
+
+alunos['Notas'].mean() == df['nomeColuna'].mean()
+
+alunos['Notas-Média(Notas)'] = alunos['Notas'].apply(lambda x: x - alunos['Notas'].mean())
+#criando uma coluna 'notas-média' e salvando nela o valor de cada nota subtraído da nota média dos alunos
+alunos['Notas-Média(Notas)']
+saída:
+0    1.025
+1   -3.975
+2   -1.475
+3    3.525
+
+REMOVENDO/ EXCLUINDO COLUNAS/VARIÁVEIS DE UM DF
+
+dados_aux = pd.DataFrame(dados[['Tipo Agregado', 'Valor m2', 'Valor Bruto', 'Valor Bruto m2']])
+#criando um df aux a partir de um original
+
+del dados_aux['Valor Bruto'] -> exclui coluna 'valor Bruto'
+
+dados_aux.pop('Valor Bruto m2') -> exclui coluna Valor Bruto m2
+
+dados.drop(['Valor Bruto', 'Valor Bruto m2'], axis = 1, inplace = True) -> ta excluindo as duas colunas
+#drop pode deletear linhas ou colunas
+#axis 1 significa eixo 1 = vertical(colunas) - axis = 0 = linhas
+
+
+CRIANDO GRUPOS A PARTIR DE UM DF:
+
+groups consiste em um dicionário em que a chave é variável pela qual desejamos agrupar as Informações e os valores são os índices onde essa chave aparece no DataFrame de origem..
+
+variável = df.groupby(colunaDf)
+
+ex1:
+grupo_bairro = dados.groupby('Bairro')
+# essa variável é do tipo DataFrameGroupBy
+
+Agora extrairemos o valor médio com base em nossa lista de bairros:
+
+for bairro, dados in grupo_bairro: 
+    print('{} -> {}'.format(bairro, dados.Valor.mean()))
+
+outro jeito de pagar a média dos valores dos bairros é: grupo_bairro['Valor'].mean()
+
+Podemos passar mais de uma variável neste espaço, como Valor e Condominio, e utilizar o método round() para arredondar os valores.
+
+grupo_bairro[['Valor', 'Condominio']].mean().round(2)
+
+ex2: seja o Dataframe:
+
+import pandas as pd
+alunos = pd.DataFrame({'Nome': ['Ary', 'Cátia', 'Denis', 'Beto', 'Bruna', 'Dara', 'Carlos', 'Alice'], 
+                        'Sexo': ['M', 'F', 'M', 'M', 'F', 'F', 'M', 'F'], 
+                        'Idade': [15, 27, 56, 32, 42, 21, 19, 35], 
+                        'Notas': [7.5, 2.5, 5.0, 10, 8.2, 7, 6, 5.6], 
+                        'Aprovado': [True, False, False, True, True, True, False, False]}, 
+                        columns = ['Nome', 'Idade', 'Sexo', 'Notas', 'Aprovado'])
+
+para obter um DataFrame com as notas médias dos alunos, com duas casas decimais faremos:
+
+sexo = alunos.groupby('Sexo') -> agrupa o df por sexo(a coluna sexo vira index/linha)
+sexo = pd.DataFrame(sexo['Notas'].mean().round(2))-> cria um df novo so com duas colunas(sexo e notas)
+sexo.columns = ['Notas Médias']
+sexo
+
+ESTATÍSTICA:
+
+Método describe() -> retorna resultados estatísticos dos dados.
+
+ex1: df[coluna x].describe() 
+Teremos como resultado um DataFrame com as colunas count a frequência; mean a média; std o desvio padrão; mino valor mínimo; 25% o primeiro quartio, 50% a mediana, 75% o terceiro quartio e max, o valor máximo
+
+método aggregate() que recebe como parâmetro o conjunto de estatísticas que nos interessam, quando identificamos problemas como desvio padrâo não coerente Podemos passá-lo comp parâmetro afim de tratá-lo.
+ex1: df[Coluna_valor].aggregate(std)
+
+ex2: grupo_bairro['Valor'].aggregate(['min', 'max']).rename(columns = {'min': 'Mínimo', 'max': 'Máximo'})
+#retorna um df com as colunas min e max referente aos dados estatísticos do df anterior
+
+O método aggregate() permite selecionar um conjunto de estatísticas personalizado. É possível declarar o método de forma simplificada, utilizando agg(), conforme exemplo abaixo:
+
+produto['Preço'].agg(['mean', 'std'])
+
+
+Queremos contar a quantidade de imóveis que possuem de 1 a 2 quartos; depois 3 e 4 quartos; 5 e 6 e a faixa final de 7 ou mais quartos. Coletaremos essas classes e criaremos uma lista, em que passaremos os valores mínimos, máximos :
+classes = [0, 2, 4, 6, 100]
+
+Em seguida, ultilizaremos o método cut() para nos ajudar a categorizar as classes. Ela receberá como parâmetro dados.Quartos e classes, o primeiro parâmetro corresponde à coluna do DataFrame.
+
+quartos = pd.cut(dados.Quartos, classes)
+Dessa maneira, teremos uma matriz categorizada.
+
+0 (0, 2]
+
+1 (0, 2]
+
+2 (0, 2]
+
+3 (0, 2]
+
+4 (2, 4]
+
+5 (0, 2]
+
+6 (2, 4]
+
+ A função cut() é uma ferramenta do pandas que auxilia na criação distribuições de frequências.
+
+ É possível criar labels para as classes criadas pela função cut().
+
+ A função cut() permite que sejam especificados os limites de cada classe.
+
+ Utilizaremos um pacote do Python, conhecido por Matplot lib, criado para gerar visualizações gráficas. Primeiramente, realizaremos a importação e configuraremos o tamanho da representação visual via figsize().
+
+%matplotlib inline #serve para poder visualizar dados no jupter
+import matplotlib.pyplot as plt 
+plt.rc('figure', figsize = (20,10)) #tamanho da imagem
+
+
+ BOX -PLOT
+
+Q1 = valor.quantile(.25) -> 1 quartil
+Q3 = valor.quantile(.75) -> 3 quartil
+IIQ = Q3 - Q1
+limite_inferior = Q1 - 1.5 * IIQ
+limite_superior = Q3 + 1.5 * IIQ
+
+Faremos uma seleção dos dados que estão apenas dentro desses dois limites, e para tanto escreveremos:
+
+selecao = (valor >=limite_inferior) & (valor <= limite_superior)# é um técnica de remover outlier
+dados_new = dados[selecao]
+
+dados_new.hist(['Valor']) #retorna uma gráfico(imagem) com essa distribuição de frequências
